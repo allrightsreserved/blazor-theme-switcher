@@ -1,13 +1,14 @@
 ﻿@inject ThemeService Themes
 @rendermode InteractiveServer
 
-<a class="themeswitcher-item list-group-item list-group-item-action @Theme.GetCssClass(Themes.ActiveTheme == Theme) @Theme.IconCssClass"
+<a class="themeswitcher-item list-group-item list-group-item-action @Theme.GetCssClass(ActiveThemeName == Theme.Name) @Theme.IconCssClass"
    @onclick:preventDefault
    @onclick="Anchor_Click">
     <span>@Theme.Title</span>
 </a>
 @code {
     [Parameter] public Theme Theme { get; set; }
+    [Parameter] public string ActiveThemeName { get; set; }
     [Parameter] public EventCallback<Theme> Click { get; set; }
 
     async Task Anchor_Click() {

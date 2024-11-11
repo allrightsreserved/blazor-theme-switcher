@@ -1,6 +1,6 @@
 ﻿@inject ThemeService Themes
 @rendermode InteractiveServer
-<ThemeJsChangeDispatcher InitialThemeName="blazor-berry"></ThemeJsChangeDispatcher>
+<ThemeJsChangeDispatcher InitialThemeName="@InitialThemeName"></ThemeJsChangeDispatcher>
 <div class="@GetHeaderContainerCss()">
     <div class="btn-container d-flex">
         <DxButton Click="@ToggleThemeSwitcherPanel" CssClass="@GetThemeSwitcherCssClass()" SizeMode="SizeMode.Large"
@@ -14,6 +14,10 @@
 </div>
 
 @code {
+    [Inject]
+    private Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor { get; set; }
+    private string? InitialThemeName { get; set; } = "blazor-berry";
+
     string _themeName;
     bool _themeSwitcherShown;
 
@@ -39,7 +43,8 @@
         }
     }
     protected override void OnInitialized() {
-        ThemeName = Themes.ActiveTheme?.Name ?? string.Empty;
+        InitialThemeName = HttpContextAccessor.HttpContext?.Request.Cookies["ActiveTheme"] ?? InitialThemeName;
+        ThemeName = InitialThemeName ?? string.Empty;
     }
     void ToggleThemeSwitcherPanel() {
         ThemeSwitcherShown = !ThemeSwitcherShown;
