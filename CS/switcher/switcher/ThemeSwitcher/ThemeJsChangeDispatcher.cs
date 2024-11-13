@@ -50,8 +50,20 @@ public class ThemeJsChangeDispatcher : ComponentBase, IThemeChangeRequestDispatc
         _pendingTheme = null;
     }
 
-    public async ValueTask DisposeAsync() {
-        if(_module != null)
-            await _module.DisposeAsync();
+    //https://stackoverflow.com/questions/72488563/blazor-server-side-application-throwing-system-invalidoperationexception-javas
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_module != null)
+            {
+                await _module.DisposeAsync();
+            }
+            GC.SuppressFinalize(this);
+        }
+        catch (JSDisconnectedException ex)
+        {
+            // Ignore
+        }
     }
 }
